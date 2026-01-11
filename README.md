@@ -9,11 +9,11 @@
   <a href="https://www.docker.com/">
     <img src="https://img.shields.io/badge/Docker-Ready-blue.svg" alt="Docker">
   </a>
-  <a href="https://github.com/Royofficely/AI-Powered-Natural-Language-Query-System/blob/main/LICENSE">
-    <img src="https://img.shields.io/github/license/Royofficely/AI-Powered-Natural-Language-Query-System" alt="License">
+  <a href="https://github.com/Royofficely/nl-query/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/Royofficely/nl-query" alt="License">
   </a>
-  <a href="https://github.com/Royofficely/AI-Powered-Natural-Language-Query-System/stargazers">
-    <img src="https://img.shields.io/github/stars/Royofficely/AI-Powered-Natural-Language-Query-System?style=social" alt="Stars">
+  <a href="https://github.com/Royofficely/nl-query/stargazers">
+    <img src="https://img.shields.io/github/stars/Royofficely/nl-query?style=social" alt="Stars">
   </a>
 </p>
 
@@ -32,8 +32,8 @@
 
 ```bash
 # Clone and configure
-git clone https://github.com/Royofficely/AI-Powered-Natural-Language-Query-System.git
-cd AI-Powered-Natural-Language-Query-System
+git clone https://github.com/Royofficely/nl-query.git
+cd nl-query
 cp .env.example .env
 
 # Add your database credentials and OpenAI key to .env
@@ -238,7 +238,7 @@ MIT License - see [LICENSE](LICENSE) for details.
 Copy this to quickly set up NL Query with AI assistants:
 
 ```
-I need to query my database with natural language. Use NL Query from github.com/Royofficely/AI-Powered-Natural-Language-Query-System
+I need to query my database with natural language. Use NL Query from github.com/Royofficely/nl-query
 
 Setup:
 1. Clone repo, copy .env.example to .env
@@ -258,6 +258,6 @@ Example: "Show me all users who signed up last month"
 </p>
 
 <p align="center">
-  <a href="https://github.com/Royofficely/AI-Powered-Natural-Language-Query-System/issues">Report Bug</a> •
-  <a href="https://github.com/Royofficely/AI-Powered-Natural-Language-Query-System/issues">Request Feature</a>
+  <a href="https://github.com/Royofficely/nl-query/issues">Report Bug</a> •
+  <a href="https://github.com/Royofficely/nl-query/issues">Request Feature</a>
 </p>
