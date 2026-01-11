@@ -64,6 +64,7 @@ python nl_postgres_query.py query    # Start querying
 ## Features
 
 ```
+Multi-LLM Support      OpenAI, Claude, Ollama, vLLM, and more
 Natural Language       Ask questions in plain English, get SQL results
 Multi-Database         PostgreSQL and MySQL support
 Schema Analysis        Automatic database structure discovery
@@ -127,6 +128,8 @@ Generated SQL: SELECT customer_type, AVG(total_amount)...
 
 ## Configuration
 
+### Database Settings
+
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
 | `DB_TYPE` | Yes | postgres | Database type (postgres/mysql) |
@@ -135,9 +138,73 @@ Generated SQL: SELECT customer_type, AVG(total_amount)...
 | `DB_PASSWORD` | Yes | - | Database password |
 | `DB_HOST` | Yes | localhost | Database host |
 | `DB_PORT` | Yes | 5432 | Database port |
-| `OPENAI_API_KEY` | Yes | - | OpenAI API key |
-| `LLM_MODEL` | No | gpt-4o | OpenAI model |
-| `TIME_ZONE` | No | UTC | Timezone for queries |
+
+### LLM Provider Settings
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `LLM_PROVIDER` | No | openai | Provider: openai, anthropic, ollama, vllm, openai-compatible |
+| `LLM_MODEL` | No | varies | Model name (provider-specific) |
+| `LLM_BASE_URL` | No | - | Custom API endpoint |
+
+<details>
+<summary><strong>OpenAI (GPT-4, GPT-4o, GPT-3.5)</strong></summary>
+
+```bash
+LLM_PROVIDER=openai
+OPENAI_API_KEY=sk-your-key
+LLM_MODEL=gpt-4o  # or gpt-4, gpt-3.5-turbo
+```
+
+</details>
+
+<details>
+<summary><strong>Anthropic (Claude)</strong></summary>
+
+```bash
+LLM_PROVIDER=anthropic
+ANTHROPIC_API_KEY=sk-ant-your-key
+LLM_MODEL=claude-sonnet-4-20250514  # or claude-3-opus, claude-3-haiku
+```
+
+</details>
+
+<details>
+<summary><strong>Ollama (Local Models)</strong></summary>
+
+```bash
+# First, install Ollama and pull a model:
+# ollama pull llama3.1
+
+LLM_PROVIDER=ollama
+LLM_MODEL=llama3.1  # or mistral, codellama, etc.
+LLM_BASE_URL=http://localhost:11434
+```
+
+</details>
+
+<details>
+<summary><strong>vLLM (Self-Hosted)</strong></summary>
+
+```bash
+LLM_PROVIDER=vllm
+LLM_MODEL=meta-llama/Llama-3.1-8B-Instruct
+LLM_BASE_URL=http://localhost:8000/v1
+```
+
+</details>
+
+<details>
+<summary><strong>OpenAI-Compatible APIs (LM Studio, LocalAI, Groq, Together)</strong></summary>
+
+```bash
+LLM_PROVIDER=openai-compatible
+LLM_MODEL=your-model-name
+LLM_BASE_URL=http://localhost:1234/v1
+OPENAI_API_KEY=your-api-key  # or EMPTY for local
+```
+
+</details>
 
 <details>
 <summary><strong>Docker Setup</strong></summary>
@@ -207,10 +274,10 @@ Results             Formatted table output
 
 - Python 3.9+
 - PostgreSQL or MySQL database
-- OpenAI API key
+- LLM API key (OpenAI, Anthropic) or local model (Ollama, vLLM)
 
 ```bash
-pip install python-dotenv psycopg2-binary SQLAlchemy pandas openai colorama treelib
+pip install -r requirements.txt
 ```
 
 ---
@@ -243,7 +310,10 @@ I need to query my database with natural language. Use NL Query from github.com/
 Setup:
 1. Clone repo, copy .env.example to .env
 2. Add database credentials (DB_TYPE, DB_NAME, DB_USER, DB_PASSWORD, DB_HOST, DB_PORT)
-3. Add OPENAI_API_KEY
+3. Choose LLM provider (LLM_PROVIDER) and add API key
+   - OpenAI: OPENAI_API_KEY
+   - Claude: ANTHROPIC_API_KEY
+   - Ollama: just set LLM_MODEL (e.g., llama3.1)
 4. pip install -r requirements.txt
 5. python nl_postgres_query.py analyze (first time)
 6. python nl_postgres_query.py query (start querying)

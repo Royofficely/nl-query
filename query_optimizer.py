@@ -1,10 +1,8 @@
 import json
-from openai import OpenAI
 from colorama import Fore
 from utils import agent_print
-from config import LLM_CONFIG, OPENAI_API_KEY
-
-client = OpenAI(api_key=OPENAI_API_KEY)
+from config import LLM_CONFIG
+from llm_provider import get_provider
 
 def optimize_query(prompt, schema, db_structure, context):
     agent_print("Query Optimizer", "Optimizing query...", Fore.MAGENTA)
@@ -38,8 +36,8 @@ def optimize_query(prompt, schema, db_structure, context):
     8. Return only the optimized SQL query, without any explanations or additional text.
     """
 
-    response = client.chat.completions.create(
-        model=LLM_CONFIG['model'],
+    provider = get_provider()
+    optimized_prompt = provider.chat(
         messages=[
             {"role": "system", "content": "You are a database query optimizer."},
             {"role": "user", "content": message}
@@ -47,6 +45,5 @@ def optimize_query(prompt, schema, db_structure, context):
         max_tokens=300
     )
 
-    optimized_prompt = response.choices[0].message.content.strip()
     agent_print("Query Optimizer", f"Optimized query: {optimized_prompt}", Fore.MAGENTA)
     return optimized_prompt

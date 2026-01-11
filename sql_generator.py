@@ -1,15 +1,13 @@
 import json
-from openai import OpenAI
 from datetime import datetime
 from colorama import Fore
 from utils import agent_print
-from config import LLM_CONFIG, OPENAI_API_KEY
+from config import LLM_CONFIG
 from prompts import SYSTEM_PROMPT, USER_PROMPT
-
-client = OpenAI(api_key=OPENAI_API_KEY)
+from llm_provider import get_provider
 
 def generate_sql(prompt, schema_chunk, config_chunk, db_structure_chunk, context):
-    """Generate SQL query from natural language prompt using OpenAI"""
+    """Generate SQL query from natural language prompt using configured LLM"""
     agent_print("Query Generator", "Generating SQL query...", Fore.GREEN)
 
     schema_info = "\n".join([f"Table: {row[0]}, Column: {row[1]}, Type: {row[2]}" for row in schema_chunk])
@@ -34,14 +32,12 @@ def generate_sql(prompt, schema_chunk, config_chunk, db_structure_chunk, context
         {"role": "user", "content": USER_PROMPT.format(prompt=prompt)}
     ]
 
-    response = client.chat.completions.create(
-        model=LLM_CONFIG['model'],
+    provider = get_provider()
+    sql_query = provider.chat(
         messages=messages,
         max_tokens=LLM_CONFIG['max_tokens'],
         temperature=LLM_CONFIG['temperature']
     )
-
-    sql_query = response.choices[0].message.content.strip()
 
     agent_print("Query Generator", "SQL query generated successfully!", Fore.GREEN)
     return sql_query
@@ -65,14 +61,12 @@ def refine_sql(combined_query, schema, config, db_structure, context):
         {"role": "user", "content": f"Refine the following SQL queries into a single optimized query:\n{combined_query}"}
     ]
 
-    response = client.chat.completions.create(
-        model=LLM_CONFIG['model'],
+    provider = get_provider()
+    refined_query = provider.chat(
         messages=messages,
         max_tokens=LLM_CONFIG['max_tokens'],
         temperature=LLM_CONFIG['temperature']
     )
-
-    refined_query = response.choices[0].message.content.strip()
 
     agent_print("Query Refiner", "SQL queries refined successfully!", Fore.BLUE)
     return refined_query

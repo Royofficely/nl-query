@@ -1,9 +1,18 @@
+# Core
 python-dotenv
-psycopg2-binary
 SQLAlchemy>=2.0
 pandas
 treelib
 colorama
-openai>=1.0
-mysql-connector-python
 tabulate
+requests
+
+# Database drivers
+psycopg2-binary
+mysql-connector-python
+
+# LLM Providers (install what you need)
+openai>=1.0        # For OpenAI GPT models
+anthropic>=0.18    # For Claude models
+# ollama runs locally, no pip package needed
+# vLLM uses openai client with custom base_url

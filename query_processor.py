@@ -2,7 +2,6 @@ import json
 import re
 import pandas as pd
 from colorama import Fore, Style
-from openai import OpenAI
 from utils import agent_print, chunk_data
 from db_connector import get_db_schema, get_db_structure
 from query_optimizer import optimize_query
@@ -10,10 +9,10 @@ from sql_generator import generate_sql, refine_sql
 from query_executor import execute_query
 from clarification_handler import ask_for_clarification
 from chat_history_manager import ChatHistoryManager
-from config import LLM_CONFIG, OPENAI_API_KEY
+from config import LLM_CONFIG
 from prompts import REFINE_PROMPT, SHORT_QUERY_PROMPT
+from llm_provider import get_provider
 
-client = OpenAI(api_key=OPENAI_API_KEY)
 chat_history = ChatHistoryManager()
 
 def extract_sql_query(text):
@@ -86,16 +85,14 @@ def handle_short_query(prompt, schema, config, db_structure):
         db_structure=json.dumps(db_structure, indent=2)
     )
 
-    response = client.chat.completions.create(
-        model=LLM_CONFIG['model'],
+    provider = get_provider()
+    interpretations = provider.chat(
         messages=[
             {"role": "system", "content": "You are a helpful assistant that interprets short database queries."},
             {"role": "user", "content": message}
         ],
         max_tokens=300
     )
-
-    interpretations = response.choices[0].message.content.strip()
 
     print(f"\n{Fore.YELLOW}Your query was quite short. Here are some possible interpretations:{Style.RESET_ALL}")
     print(interpretations)

@@ -1,11 +1,9 @@
 import json
-from openai import OpenAI
 from colorama import Fore, Style
 from utils import agent_print
-from config import LLM_CONFIG, OPENAI_API_KEY
+from config import LLM_CONFIG
 from prompts import CLARIFICATION_PROMPT
-
-client = OpenAI(api_key=OPENAI_API_KEY)
+from llm_provider import get_provider
 
 def ask_for_clarification(prompt, schema, db_structure):
     agent_print("Clarification", "Asking user for clarification...", Fore.CYAN)
@@ -19,16 +17,14 @@ def ask_for_clarification(prompt, schema, db_structure):
         prompt=prompt
     )
 
-    response = client.chat.completions.create(
-        model=LLM_CONFIG['model'],
+    provider = get_provider()
+    clarifications = provider.chat(
         messages=[
             {"role": "system", "content": "You are a helpful assistant that provides clarifications for database queries."},
             {"role": "user", "content": message}
         ],
         max_tokens=300
     )
-
-    clarifications = response.choices[0].message.content.strip()
 
     print(f"\n{Fore.YELLOW}I'm not sure I understood your query correctly. Here are some possible interpretations:{Style.RESET_ALL}")
     print(clarifications)
