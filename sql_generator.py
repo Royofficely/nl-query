@@ -1,10 +1,12 @@
 import json
-import openai
+from openai import OpenAI
 from datetime import datetime
 from colorama import Fore
 from utils import agent_print
-from config import LLM_CONFIG
+from config import LLM_CONFIG, OPENAI_API_KEY
 from prompts import SYSTEM_PROMPT, USER_PROMPT
+
+client = OpenAI(api_key=OPENAI_API_KEY)
 
 def generate_sql(prompt, schema_chunk, config_chunk, db_structure_chunk, context):
     """Generate SQL query from natural language prompt using OpenAI"""
@@ -22,25 +24,24 @@ def generate_sql(prompt, schema_chunk, config_chunk, db_structure_chunk, context
     """
     messages = [
         {"role": "system", "content": SYSTEM_PROMPT.format(
-            schema_info=schema_info, 
+            schema_info=schema_info,
             config_info=config_info,
             structure_info=structure_info
         )},
         {"role": "system", "content": f"Current time information:\n{time_info}"},
         {"role": "system", "content": f"Recent chat history:\n{context}"},
         {"role": "system", "content": "You are an SQL query generator. Respond only with the SQL query, without any explanation or additional text."},
-        {"role": "system", "content": "Important: For the 'users' table, use 'bs_name' (business name) or 'uphone_number' (user phone number) instead of 'name' when referring to user identifiers."},
         {"role": "user", "content": USER_PROMPT.format(prompt=prompt)}
     ]
 
-    response = openai.ChatCompletion.create(
+    response = client.chat.completions.create(
         model=LLM_CONFIG['model'],
         messages=messages,
         max_tokens=LLM_CONFIG['max_tokens'],
         temperature=LLM_CONFIG['temperature']
     )
 
-    sql_query = response['choices'][0]['message']['content'].strip()
+    sql_query = response.choices[0].message.content.strip()
 
     agent_print("Query Generator", "SQL query generated successfully!", Fore.GREEN)
     return sql_query
@@ -55,7 +56,7 @@ def refine_sql(combined_query, schema, config, db_structure, context):
 
     messages = [
         {"role": "system", "content": SYSTEM_PROMPT.format(
-            schema_info=schema_info, 
+            schema_info=schema_info,
             config_info=config_info,
             structure_info=structure_info
         )},
@@ -64,14 +65,14 @@ def refine_sql(combined_query, schema, config, db_structure, context):
         {"role": "user", "content": f"Refine the following SQL queries into a single optimized query:\n{combined_query}"}
     ]
 
-    response = openai.ChatCompletion.create(
+    response = client.chat.completions.create(
         model=LLM_CONFIG['model'],
         messages=messages,
         max_tokens=LLM_CONFIG['max_tokens'],
         temperature=LLM_CONFIG['temperature']
     )
 
-    refined_query = response['choices'][0]['message']['content'].strip()
+    refined_query = response.choices[0].message.content.strip()
 
     agent_print("Query Refiner", "SQL queries refined successfully!", Fore.BLUE)
     return refined_query

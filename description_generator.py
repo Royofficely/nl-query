@@ -1,8 +1,8 @@
-import openai
+from openai import OpenAI
 from config import OPENAI_API_KEY, LLM_CONFIG
 from prompts import TABLE_DESCRIPTION_PROMPT, COLUMN_DESCRIPTION_PROMPT, DESCRIPTION_SYSTEM_PROMPT
 
-openai.api_key = OPENAI_API_KEY
+client = OpenAI(api_key=OPENAI_API_KEY)
 
 def generate_description(item_name, item_type, data_type=None):
     """Generate a description for a table or column using OpenAI's API"""
@@ -11,7 +11,7 @@ def generate_description(item_name, item_type, data_type=None):
     elif item_type == "column":
         prompt = COLUMN_DESCRIPTION_PROMPT.format(item_name=item_name, data_type=data_type)
 
-    response = openai.ChatCompletion.create(
+    response = client.chat.completions.create(
         model=LLM_CONFIG['model'],
         messages=[
             {"role": "system", "content": DESCRIPTION_SYSTEM_PROMPT},
@@ -21,5 +21,5 @@ def generate_description(item_name, item_type, data_type=None):
         temperature=LLM_CONFIG['temperature']
     )
 
-    description = response['choices'][0]['message']['content'].strip()
+    description = response.choices[0].message.content.strip()
     return description

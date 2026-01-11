@@ -1,0 +1,19 @@
+services:
+  nlquery:
+    build: .
+    stdin_open: true
+    tty: true
+    environment:
+      - DB_TYPE=${DB_TYPE:-postgres}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_HOST=${DB_HOST:-host.docker.internal}
+      - DB_PORT=${DB_PORT:-5432}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - LLM_MODEL=${LLM_MODEL:-gpt-4o}
+      - TIME_ZONE=${TIME_ZONE:-UTC}
+    volumes:
+      - ./db_config.json:/app/db_config.json
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

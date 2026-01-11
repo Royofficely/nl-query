@@ -2,7 +2,7 @@ import json
 import re
 import pandas as pd
 from colorama import Fore, Style
-import openai
+from openai import OpenAI
 from utils import agent_print, chunk_data
 from db_connector import get_db_schema, get_db_structure
 from query_optimizer import optimize_query
@@ -10,16 +10,17 @@ from sql_generator import generate_sql, refine_sql
 from query_executor import execute_query
 from clarification_handler import ask_for_clarification
 from chat_history_manager import ChatHistoryManager
-from config import LLM_CONFIG
+from config import LLM_CONFIG, OPENAI_API_KEY
 from prompts import REFINE_PROMPT, SHORT_QUERY_PROMPT
 
+client = OpenAI(api_key=OPENAI_API_KEY)
 chat_history = ChatHistoryManager()
 
 def extract_sql_query(text):
     # Remove markdown code block syntax
     text = re.sub(r'```sql\s*', '', text)
     text = re.sub(r'\s*```', '', text)
-    
+
     # Try to extract SQL query from the text
     match = re.search(r'\s*(SELECT[\s\S]*?;)\s*$', text, re.IGNORECASE)
     if match:
@@ -85,7 +86,7 @@ def handle_short_query(prompt, schema, config, db_structure):
         db_structure=json.dumps(db_structure, indent=2)
     )
 
-    response = openai.ChatCompletion.create(
+    response = client.chat.completions.create(
         model=LLM_CONFIG['model'],
         messages=[
             {"role": "system", "content": "You are a helpful assistant that interprets short database queries."},
@@ -94,7 +95,7 @@ def handle_short_query(prompt, schema, config, db_structure):
         max_tokens=300
     )
 
-    interpretations = response['choices'][0]['message']['content'].strip()
+    interpretations = response.choices[0].message.content.strip()
 
     print(f"\n{Fore.YELLOW}Your query was quite short. Here are some possible interpretations:{Style.RESET_ALL}")
     print(interpretations)

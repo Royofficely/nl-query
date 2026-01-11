@@ -1,8 +1,10 @@
 import json
-import openai
+from openai import OpenAI
 from colorama import Fore
 from utils import agent_print
-from config import LLM_CONFIG
+from config import LLM_CONFIG, OPENAI_API_KEY
+
+client = OpenAI(api_key=OPENAI_API_KEY)
 
 def optimize_query(prompt, schema, db_structure, context):
     agent_print("Query Optimizer", "Optimizing query...", Fore.MAGENTA)
@@ -31,13 +33,12 @@ def optimize_query(prompt, schema, db_structure, context):
     3. Take into account the relationships between tables when constructing JOINs.
     4. Be aware that some fields might be of JSON type and require special handling.
     5. Avoid using SELECT * for tables with JSON columns. Instead, list out the specific columns needed.
-    6. If JSON data needs to be retrieved, use the appropriate PostgreSQL JSON functions.
+    6. If JSON data needs to be retrieved, use the appropriate PostgreSQL/MySQL JSON functions.
     7. Consider the chat history when interpreting the user's query, especially for follow-up questions or references to previous results.
-    8. For the 'users' table, use 'bs_name' (business name) or 'uphone_number' (user phone number) instead of 'name' when referring to user identifiers.
-    9. Return only the optimized SQL query, without any explanations or additional text.
+    8. Return only the optimized SQL query, without any explanations or additional text.
     """
 
-    response = openai.ChatCompletion.create(
+    response = client.chat.completions.create(
         model=LLM_CONFIG['model'],
         messages=[
             {"role": "system", "content": "You are a database query optimizer."},
@@ -46,6 +47,6 @@ def optimize_query(prompt, schema, db_structure, context):
         max_tokens=300
     )
 
-    optimized_prompt = response['choices'][0]['message']['content'].strip()
+    optimized_prompt = response.choices[0].message.content.strip()
     agent_print("Query Optimizer", f"Optimized query: {optimized_prompt}", Fore.MAGENTA)
     return optimized_prompt

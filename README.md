@@ -1,152 +1,263 @@
-# 🤖💬 AI-Powered Natural Language Query System
+<h1 align="center">NL Query</h1>
 
-
+<h4 align="center">Query your PostgreSQL or MySQL database using natural language. No SQL required.</h4>
 
 <p align="center">
-  <strong>Query your database using natural language, powered by cutting-edge AI technology.</strong>
+  <a href="https://www.python.org/downloads/">
+    <img src="https://img.shields.io/badge/python-3.9+-blue.svg" alt="Python 3.9+">
+  </a>
+  <a href="https://www.docker.com/">
+    <img src="https://img.shields.io/badge/Docker-Ready-blue.svg" alt="Docker">
+  </a>
+  <a href="https://github.com/Royofficely/AI-Powered-Natural-Language-Query-System/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/Royofficely/AI-Powered-Natural-Language-Query-System" alt="License">
+  </a>
+  <a href="https://github.com/Royofficely/AI-Powered-Natural-Language-Query-System/stargazers">
+    <img src="https://img.shields.io/github/stars/Royofficely/AI-Powered-Natural-Language-Query-System?style=social" alt="Stars">
+  </a>
 </p>
 
 <p align="center">
-  <a href="#key-features">Key Features</a> •
-  <a href="#demo">Demo</a> •
-  <a href="#quick-start-guide">Quick Start Guide</a> •
-  <a href="#detailed-usage">Detailed Usage</a> •
-  <a href="#configuration">Configuration</a> •
-  <a href="#contributing">Contributing</a> •
-  <a href="#license">License</a>
+  <a href="#-quick-start">Quick Start</a> •
+  <a href="#-why-nl-query">Why NL Query</a> •
+  <a href="#-features">Features</a> •
+  <a href="#-usage">Usage</a> •
+  <a href="#-configuration">Configuration</a> •
+  <a href="#-contributing">Contributing</a>
 </p>
 
-<p align="center">
-  <img src="https://wiki.postgresql.org/images/a/a4/PostgreSQL_logo.3colors.svg" alt="PostgreSQL Logo" width="100"/>
-    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/ChatGPT_logo.svg/768px-ChatGPT_logo.svg.png" alt="GPT Logo" width="100"/>
-  <img src="https://www.mysql.com/common/logos/logo-mysql-170x115.png" alt="MySQL Logo" width="150"/>
-</p>
+---
 
-## 🌟 Key Features
+## Quick Start
 
-- 📊 **Intelligent Database Analysis**: Automatically analyze and understand your database structure.
-- 💬 **Natural Language Queries**: Ask questions in plain English and get accurate results.
-- 🧠 **AI-Powered Optimization**: Leverage advanced AI to optimize your queries for best performance.
-- 🔄 **Automatic SQL Generation**: Convert natural language to efficient SQL queries behind the scenes.
-- 🎨 **Rich, Informative Output**: Get clear, colorful, and detailed responses in your console.
-- 🔌 **Multi-Database Support**: Works seamlessly with both PostgreSQL and MySQL databases.
-- 🛡️ **Error Handling & Clarifications**: Smart error detection with an interactive clarification process.
+```bash
+# Clone and configure
+git clone https://github.com/Royofficely/AI-Powered-Natural-Language-Query-System.git
+cd AI-Powered-Natural-Language-Query-System
+cp .env.example .env
 
-## 🎥 Demo
+# Add your database credentials and OpenAI key to .env
 
-<p align="center">
-  <img src="https://officelyfiles.s3.eu-west-1.amazonaws.com/5146fca5-777b-4e99-907f-b19a3cf1b884.gif" alt="Demo GIF" width="600"/>
-</p>
+# Install and run
+pip install -r requirements.txt
+python nl_postgres_query.py analyze  # First time: analyze your DB
+python nl_postgres_query.py query    # Start querying
+```
 
-Watch our system in action! See how easy it is to query complex databases using simple, natural language.
+**That's it.** Ask questions like "Show me all users who signed up last month"
 
-## 🚀 Quick Start Guide
+---
 
-### Prerequisites
+## Why NL Query?
 
-- Python 3.8+
+| Problem | How We Solve It |
+|---------|-----------------|
+| **Need SQL knowledge** | Ask questions in plain English |
+| **Complex joins** | AI understands table relationships automatically |
+| **Learning DB structure** | Analyze command maps your entire schema |
+| **Typos in queries** | Smart clarification asks what you meant |
+| **Context switching** | Chat history remembers previous queries |
+| **Multi-database setup** | Works with PostgreSQL and MySQL |
+
+---
+
+## Features
+
+```
+Natural Language       Ask questions in plain English, get SQL results
+Multi-Database         PostgreSQL and MySQL support
+Schema Analysis        Automatic database structure discovery
+Smart Clarification    Suggests alternatives when queries are unclear
+Chat History           Context-aware follow-up questions
+Query Optimization     AI optimizes generated SQL for performance
+Docker Ready           One-command deployment with Docker Compose
+Colorful CLI           Rich, informative console output
+```
+
+---
+
+## Usage
+
+### 1. Analyze Your Database (First Time)
+
+```bash
+python nl_postgres_query.py analyze
+```
+
+This will:
+- Connect to your database
+- Analyze all tables and columns
+- Generate a visual schema tree
+- Save structure for future queries
+
+### 2. Start Querying
+
+```bash
+python nl_postgres_query.py query
+```
+
+### Example Queries
+
+| Query Type | Example |
+|------------|---------|
+| **Simple** | "Show me all users" |
+| **Filtered** | "Users who signed up in the last month" |
+| **Aggregation** | "Total revenue by product category" |
+| **Top N** | "Top 5 customers by order value" |
+| **Time-based** | "Daily transactions for the past week" |
+| **Follow-up** | "Now filter those by region" |
+
+<details>
+<summary><strong>More Examples</strong></summary>
+
+```
+> Show me all orders from last week
+Generated SQL: SELECT * FROM orders WHERE created_at >= '2024-01-08'...
+
+> What's the average order value?
+Generated SQL: SELECT AVG(total_amount) FROM orders...
+
+> Break it down by customer type
+Generated SQL: SELECT customer_type, AVG(total_amount)...
+```
+
+</details>
+
+---
+
+## Configuration
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `DB_TYPE` | Yes | postgres | Database type (postgres/mysql) |
+| `DB_NAME` | Yes | - | Database name |
+| `DB_USER` | Yes | - | Database username |
+| `DB_PASSWORD` | Yes | - | Database password |
+| `DB_HOST` | Yes | localhost | Database host |
+| `DB_PORT` | Yes | 5432 | Database port |
+| `OPENAI_API_KEY` | Yes | - | OpenAI API key |
+| `LLM_MODEL` | No | gpt-4o | OpenAI model |
+| `TIME_ZONE` | No | UTC | Timezone for queries |
+
+<details>
+<summary><strong>Docker Setup</strong></summary>
+
+```bash
+# Configure
+cp .env.example .env
+# Edit .env with your settings
+
+# Run with Docker
+docker-compose run --rm nlquery analyze
+docker-compose run --rm nlquery query
+```
+
+Note: Use `host.docker.internal` as DB_HOST to connect to databases on your host machine.
+
+</details>
+
+---
+
+## How It Works
+
+```
+User Query          "Show users from California"
+     |
+     v
+Query Optimizer     Analyzes schema, adds context
+     |
+     v
+SQL Generator       SELECT * FROM users WHERE state = 'California'
+     |
+     v
+Query Executor      Runs against your database
+     |
+     v
+Results             Formatted table output
+```
+
+---
+
+## Use Cases
+
+| Use Case | Description |
+|----------|-------------|
+| **Business Analytics** | Query sales data without SQL |
+| **Data Exploration** | Quickly understand new databases |
+| **Reporting** | Generate insights for non-technical users |
+| **Development** | Prototype queries before writing SQL |
+| **Support** | Let support teams query customer data |
+| **Learning** | Understand SQL by seeing generated queries |
+
+---
+
+## Troubleshooting
+
+| Problem | Solution |
+|---------|----------|
+| Connection refused | Check DB_HOST and DB_PORT in .env |
+| Authentication failed | Verify DB_USER and DB_PASSWORD |
+| OpenAI rate limit | Wait a moment or use GPT-3.5-turbo |
+| Wrong results | Run `analyze` again to refresh schema |
+| Slow queries | Generated SQL shown - optimize manually if needed |
+
+---
+
+## Requirements
+
+- Python 3.9+
 - PostgreSQL or MySQL database
 - OpenAI API key
 
-### Setup in 4 Easy Steps
-
-1. **Clone and Navigate**
-   ```bash
-   git clone https://github.com/yourusername/nl-query-system.git
-   cd nl-query-system
-   ```
-
-2. **Set Up Virtual Environment**
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
-
-3. **Install Dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. **Configure**
-   Create a `config.py` file:
-   ```python
-   DB_CONFIG = {
-       "type": "postgres",  # or "mysql"
-       "dbname": "your_db_name",
-       "user": "your_username",
-       "password": "your_password",
-       "host": "your_host",
-       "port": "your_port"
-   }
-   OPENAI_API_KEY = "your_openai_api_key"
-   ```
-
-## 📘 Detailed Usage
-
-### Analyzing Your Database
-
 ```bash
-python nl_query_system.py analyze
+pip install python-dotenv psycopg2-binary SQLAlchemy pandas openai colorama treelib
 ```
-This command will:
-- Connect to your database (PostgreSQL or MySQL)
-- Analyze its structure
-- Generate a visual representation of your schema
-- Save the analysis for optimizing future queries
 
-### Querying Your Database
+---
 
-```bash
-python nl_query_system.py query
-```
-Once in the query interface:
-1. Type your question in natural language
-2. The system will generate and execute an SQL query
-3. View the results directly in your console
+## Contributing
 
-Example queries:
-- "Show me all users who signed up in the last month"
-- "What's the total revenue from each product category?"
-- "List the top 5 customers by order value"
-- "How many transactions were processed daily over the past week?"
-
-## ⚙️ Configuration
-
-Fine-tune your experience by adjusting these parameters in `config.py`:
-
-- `LLM_CONFIG`: Customize the AI model settings
-- `ENABLE_SCHEMA_CACHE`: Toggle schema caching for faster startup
-- `LOG_LEVEL`: Set the desired logging detail level
-
-## 🤝 Contributing
-
-We welcome contributions! Here's how you can help:
+Contributions welcome! Please:
 
 1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-Check out our [Contributing Guidelines](CONTRIBUTING.md) for more details.
+---
 
-## 📜 License
+## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT License - see [LICENSE](LICENSE) for details.
 
-## 🙏 Acknowledgments
+---
 
-- OpenAI for their groundbreaking language models
-- The PostgreSQL and MySQL teams for their robust database systems
-- All our contributors and supporters who make this project possible
+## AI Prompt
+
+Copy this to quickly set up NL Query with AI assistants:
+
+```
+I need to query my database with natural language. Use NL Query from github.com/Royofficely/AI-Powered-Natural-Language-Query-System
+
+Setup:
+1. Clone repo, copy .env.example to .env
+2. Add database credentials (DB_TYPE, DB_NAME, DB_USER, DB_PASSWORD, DB_HOST, DB_PORT)
+3. Add OPENAI_API_KEY
+4. pip install -r requirements.txt
+5. python nl_postgres_query.py analyze (first time)
+6. python nl_postgres_query.py query (start querying)
+
+Example: "Show me all users who signed up last month"
+```
 
 ---
 
 <p align="center">
-  Made with ❤️ by RoyNativ @OfficelyAI
+  <sub>Built by <a href="https://github.com/Royofficely">Roy Nativ</a> at <a href="https://officely.ai">Officely AI</a></sub>
 </p>
 
 <p align="center">
-  <a href="https://github.com/yourusername/nl-query-system/issues">Report Bug</a> •
-  <a href="https://github.com/yourusername/nl-query-system/issues">Request Feature</a>
+  <a href="https://github.com/Royofficely/AI-Powered-Natural-Language-Query-System/issues">Report Bug</a> •
+  <a href="https://github.com/Royofficely/AI-Powered-Natural-Language-Query-System/issues">Request Feature</a>
 </p>
